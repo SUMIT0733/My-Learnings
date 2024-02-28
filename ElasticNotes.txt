@@ -1,0 +1,45 @@
+ElasticSearch: stores data in structured format, so its easier to filter, sort and analyze the data. (JSON format)
+Kibana: visualize the elastic data into built-in graphs, maps etc. Dashboards, 
+Logstash: Data processing pipeline, Consist of 3 stages, Input-> (Source logs, beats, https endpoints), filter-> plugins, output-> https endpoints, elasticsearch, kafka, emails
+			(Ex: logs from apache is filter based on RE and then stored in elasticsearch.)
+X-pack: Extra features to elasticsearch, security, authorization, authentication, Montiroing of elasticsearch health, CPU Usage, memory, Alerts, Reports generation, ML for anomaly detection, Forecase ML, Graph, Elastic SQL->SQL for ealstic search
+Beats: Agent that resides in server and sends logs to elastic, Ex. Filebeat, Metribeat
+
+{ Logstash + beats(Data collection) -> ElasticSearch(Analysis, filter, search) <- Kibana(visualization) } + X-pack (For extra features)
+
+To run: bin/elasticsearch.bat -> localhost:9200
+Kibana: bin/kibana.bat -> localhost:5601
+
+ElasticSearch Query:
+
+HTTP_VERB ADDRESS/COMMAND
+
+1) GET /_cluster/health : Health of cluster
+2) GET /_cat/nodes?v : list all indices
+3) GET /_cat/indices?expand_wildcards=all : list all the indices including system indices.
+
+Certificates for cURL : config/certs/http_ca.crt
+cURL options: -cacert PATH_TO_CERTIFICATE, -u USERNAME:PASSWORD, -d {JSON document to pass to the query}, -H {header content-type, must for -d}, use {https://CMD}
+
+Sharding+scalability: sharding divides index into pieces called shards, at index level, scales horizontally.
+Replication: req min 2 nodes, 
+
+run primary node : bin\elasticsearch.bat
+run this on primary node folder : bin\elasticsearch-create-enrollment-token -s node {Node scope token}
+run on second node folder : bin\elasticsearch.bat --enrollment-token {TOKEN} [To join the cluster][change the node name in config\elasticsearch.yml]
+
+PUT /{name} : for creating indices
+PUT /{name}
+{
+	JSON body
+} : for creating indices with custom settings.
+DELETE /{name} : for deleting
+
+POST /{indices}/_doc {JSON BODY} : for creating document with auto-generated ID
+PUT /{indices}/_doc/{ID} {JSON BODY} : for creating document with specified ID
+GET /{indices}/_doc/{ID} : to get the document by ID
+
+POST /{indeces}/_update/{ID} {"doc":{JSON BODY}} : to update or add new field to document
+POST /{indices}/_update/{ID} : to use script to update on some condition.
+
+CURL SYNTAX : curl -H {HEADERS} -	X{HTTP_VERB}<SPACE>{FULL_ENDPOINT}<SPACE>--data-binary "{@FILENAME / JSON data}"
