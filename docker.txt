@@ -1,0 +1,46 @@
+docker container run -t ubuntu top
+
+docker run = docker pull + docker start(run)
+docker container ls : List of running container
+docker images: list of images on local machine
+docker container exec -it <CONTAINER ID> bash: attach cmd to container (enter back to container)
+docker attach <CONTAINER ID>: same as above
+docker container run --detach --publish 8080:80 --name nginx nginx:
+--detach: run container in background
+--publish: 8080(HOST PORT)-80(CONTAINER PORT)
+--name: specifies the name of container
+
+docker container inspect <NAME>: inspect container
+docker container run --detach --publish 8081:27017 --name mongo mongo:3.4 : specifies the version 
+docker container stop <NAME or 3 DIGIT_OF_CONTAINER_ID>: stop the container
+docker system prune: remove stopped containers
+
+docker build -f <FILENAME>: build docker images from dockerfile
+Example=============================
+FROM ubuntu (base image)
+ADD myapp / (add some code)
+EXPOSE 80 (expose port inside container)
+ENTRYPOINT /myapp (Entrypoint for docker attach or default process while running the container from this image)
+==========================================
+
+docker image build -t python-hello-world .
+docker run -p/--publish 5001<HOST_PORT>:5000<CONTAINER_PORT> -t --name <NAME> <image:version>
+docker container logs <CONTAINER_ID> : to see the Logs
+docker login: login to docker hub repostiroy
+docker tag python-hello-world <username>/<image_name>: tag image with your account
+docker tag smonapara/python-flask smonapara/python-flask:v2: tag source to destination
+docker push <username>/<image_name>: push to dcker hub
+
+=============================================
+docker swarm init --advertise-addr eth0 : Initialize the docker swarm
+docker node ls
+
+docker service create --detach=true --name nginx1 --publish 80:80  --mount<OUTPUT_HOST> source=/etc/hostname,target=/usr/share/nginx/html/index.html,type=bind,ro nginx:1.12
+docker service ps nginx1
+docker service ls
+docker service update --replicas=5 --detach=true nginx1 : scale the container replicas
+docker service ps nginx1 : check all the replicas
+docker service logs <service_name>
+docker service update --image nginx:1.13 --detach=true nginx1 : update the image, rolling update
+watch -n 1 docker service ps nginx2 : watch live logs
+docker swarm leave: leave the swarm cluster
